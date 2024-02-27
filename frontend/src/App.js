@@ -59,13 +59,16 @@ function App() {
     console.log(`Missing Coins: ${missingCoins}`);
   }, [missingCoins]);
   
+  const deleteCoin = (coin) => {
+    
+  }
 
   return (
     <div className="App">
         <h1>Coins</h1>
 
         {coins.map((coin) => {
-          return <div className={missingCoins.includes(coin.asset_id) ? 'saved' : 'coin'} key={coin.id_icon}><span>{coin.name}</span><button onClick={() => saveCoin(coin)}>Save</button></div>
+          return <div className={missingCoins.includes(coin.asset_id) ? 'saved' : 'coin'} key={coin.id_icon}><span>{coin.name}</span> {missingCoins.includes(coin.asset_id) ? <button onClick={() => deleteCoin(coin)}>Unsave</button> : <button onClick={() => saveCoin(coin)}>Save</button>} </div>
         })}
     </div>
   );
