@@ -84,5 +84,17 @@ def start():
 
     return response
 
+@app.route('/delete-coin', methods=['DELETE'])
+def delete_coin():
+    data = request.json
+    delete_id = data.get('id')
+
+    check_id = SavedCoin.query.filter_by(id=delete_id).first()
+    if check_id:
+        db.session.delete(check_id)
+        db.session.commit()
+
+        return jsonify({"message": "data deleted!"})
+
 if __name__ == '__main__':
     app.run(debug=True)

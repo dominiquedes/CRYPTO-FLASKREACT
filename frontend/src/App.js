@@ -9,9 +9,12 @@ function App() {
   const [savedCoins, setSavedCoins] = useState([])
   const [missingCoins, setMissingCoins] = useState([]);
   const [refreshFlag, setRefreshFlag] = useState(false);
+  const [message, setMessage] = useState("")
 
   const saveCoin = async (coin) => {
-    axios.post('http://localhost:5000/add-coins', { name: coin.name, coin_id: coin.asset_id })
+    axios.post('http://localhost:5000/add-coins', { name: coin.name, coin_id: coin.asset_id }).then(
+      setMessage("Done! Refresh screen to see results!")
+    )
     setRefreshFlag(!refreshFlag);
   }
 
@@ -41,6 +44,8 @@ function App() {
         console.log(savedCoins)
       }
     )
+
+    console.log(savedCoins)
     
   }, [])
 
@@ -51,7 +56,8 @@ function App() {
       }
       return missingIds;
     }, []);
-    
+  
+
   }, [savedCoins, coins]);
   
   useEffect(() => {
@@ -59,16 +65,29 @@ function App() {
     console.log(`Missing Coins: ${missingCoins}`);
   }, [missingCoins]);
   
-  const deleteCoin = (coin) => {
-    
+  const deleteCoin = async (value) => {
+    const foundItem = savedCoins.find(item => item.coin_id === value);
+    if (foundItem) {
+      axios.delete('http://localhost:5000/delete-coin', { data: { id: foundItem.id }}).then(
+        setMessage("Done! Refresh screen to see results!")
+      )
+      setRefreshFlag(!refreshFlag);    
+      
+    } 
+    else {
+      console.log(`No item found with coin_id "${value}"`);
+    }
+
+
+
   }
 
   return (
     <div className="App">
         <h1>Coins</h1>
-
+        {message !== "" ? <p className='Message'>{message}</p> : "" }
         {coins.map((coin) => {
-          return <div className={missingCoins.includes(coin.asset_id) ? 'saved' : 'coin'} key={coin.id_icon}><span>{coin.name}</span> {missingCoins.includes(coin.asset_id) ? <button onClick={() => deleteCoin(coin)}>Unsave</button> : <button onClick={() => saveCoin(coin)}>Save</button>} </div>
+          return <div className={missingCoins.includes(coin.asset_id) ? 'saved' : 'coin'} key={coin.id_icon}><span className='name'>{coin.name}</span><br/> <span className='price'>{coin.price_usd}</span> <br />{missingCoins.includes(coin.asset_id) ? <button onClick={() => deleteCoin(coin.asset_id)}>Unsave</button> : <button onClick={() => saveCoin(coin)}>Save</button>} </div>
         })}
     </div>
   );
