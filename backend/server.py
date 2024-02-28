@@ -8,7 +8,7 @@ import psycopg2
 app = Flask(__name__)
 CORS(app, origins='*')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:03sept08@localhost/cryptoapp"
+app.config['SQLALCHEMY_DATABASE_URI'] = ""
 db = SQLAlchemy(app)
 
 
@@ -63,7 +63,7 @@ def get_coins():
     payload={}
     headers = {
     'Accept': 'text/json',
-    'X-CoinAPI-Key': '16476A50-1E62-4BCC-B8BA-FC186235FFB3'
+    'X-CoinAPI-Key': ''
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
